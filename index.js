@@ -11,7 +11,7 @@ document.body.appendChild(renderer.domElement);
 
 // 2. Camera (Wide-angle for mobile compatibility)
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(10, 12, 20);
+camera.position.set(10, 12, 19);
 
 // 3. Controls (Smooth movement)
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -51,13 +51,13 @@ loader.load("./helvetiker_regular.typeface.json", function (font) {
     // Main text material
     const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(-7, 8, -1);
+    textMesh.position.set(-7, 9, 0);
     scene.add(textMesh);
 
     // Wireframe Overlay (Slightly larger to create a glowing effect)
     const wireMat = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
     const wireMesh = new THREE.Mesh(textGeometry, wireMat);
-    wireMesh.scale.setScalar(1.002);
+    wireMesh.scale.setScalar(1.0);
     textMesh.add(wireMesh);
 
     animate(textMesh);

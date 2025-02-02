@@ -39,7 +39,7 @@ loader.load("./helvetiker_regular.typeface.json", function (font) {
 
     const textGeometry = new TextGeometry("DOTpdf", {
         font: font,
-        size: 2.5,  // Adjusted for mobile fit
+        size: 3.0,  // Adjusted for mobile fit
         depth: 2,  // Reduced depth for performance
         curveSegments: 12,  // Less complexity = better performance
         bevelEnabled: true,

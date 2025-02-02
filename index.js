@@ -4,7 +4,7 @@ import { FontLoader } from "https://esm.sh/three/examples/jsm/loaders/FontLoader
 import { TextGeometry } from "https://esm.sh/three/examples/jsm/geometries/TextGeometry.js";
 
 // Text variations
-const textVariations = ["DOTpdf", "DOTjpg", "DOTpng"];
+const textVariations = ["DOTpng", "DOTjpg", "DOTpdf"];
 let currentTextIndex = 0;
 
 // Renderer
@@ -66,7 +66,7 @@ function createText(text) {
     // Create new text geometry
     const textGeometry = new TextGeometry(text, {
         font: loadedFont, // Ensure font is used
-        size: 3.2,
+        size: 3.0,
         depth: 2,
         curveSegments: 12,
         bevelEnabled: true,
@@ -85,14 +85,21 @@ function createText(text) {
     // Combine materials
     textMesh = new THREE.Mesh(textGeometry, [textMaterial, wireframeMaterial]);
 
-    textMesh.position.set(-8, 9, 0);
+    textMesh.position.set(-7, 9, 0);
     scene.add(textMesh);
 }
 
-// Click Event Listener
-window.addEventListener("click", (event) => {
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// Function to Handle Click or Touch
+function handleInteraction(event) {
+    if (event.touches) {
+        // Touch event (Mobile)
+        mouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+    } else {
+        // Mouse event (Desktop)
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    }
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(textMesh);
@@ -101,7 +108,11 @@ window.addEventListener("click", (event) => {
         currentTextIndex = (currentTextIndex + 1) % textVariations.length;
         createText(textVariations[currentTextIndex]); // Update text
     }
-});
+}
+
+// Add both Click and Touch Events
+window.addEventListener("click", handleInteraction);
+window.addEventListener("touchstart", handleInteraction, { passive: true });
 
 // Responsive Resize Handling
 window.addEventListener("resize", () => {
@@ -118,7 +129,7 @@ window.addEventListener("resize", () => {
 function animate() {
     function renderLoop() {
         requestAnimationFrame(renderLoop);
-        if (textMesh) textMesh.rotation.y += 0.0003;
+        if (textMesh) textMesh.rotation.y += 0.0005;
         renderer.render(scene, camera);
         controls.update();
     }

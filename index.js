@@ -74,6 +74,8 @@ window.addEventListener("resize", () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Prevents excessive rendering on mobile
 });
 
+
+
 // 8. Animation (Smooth FPS and better loop handling)
 function animate(mesh) {
     function renderLoop() {
@@ -83,4 +85,5 @@ function animate(mesh) {
         controls.update();
     }
     renderLoop();
+
 }

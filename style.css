@@ -1,0 +1,6 @@
+html, body {
+    background-color: white !important; /* Change to your desired color */
+    margin: 0; /* Remove default margin */
+    height: 100%; /* Ensure the body takes up the full viewport height */
+}
+

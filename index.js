@@ -1,53 +1,86 @@
-import * as THREE from "three";
-import { OrbitControls} from "jsm/controls/OrbitControls.js";
+import * as THREE from "https://esm.sh/three";
+import { OrbitControls } from "https://esm.sh/three/examples/jsm/controls/OrbitControls.js";
+import { FontLoader } from "https://esm.sh/three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "https://esm.sh/three/examples/jsm/geometries/TextGeometry.js";
 
-//1. renderer
-const w = window.innerWidth
-const h = window.innerHeight
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setSize(w, h);
+// 1. Renderer (Optimized)
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel density for performance
 document.body.appendChild(renderer.domElement);
 
-//2. camera
-const fov = 75;
-const aspect = w/h;
-const near = 0.1;
-const far = 15; 
-const camera = new THREE.PerspectiveCamera(fov, aspect, near, far );
-camera.position.z = 2; 
+// 2. Camera (Wide-angle for mobile compatibility)
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(7, 10, 20);
 
-const controls = new OrbitControls(camera, renderer.domElement); //move around 
+// 3. Controls (Smooth movement)
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.DampingFactor = 0.02;
-//3. scene
+controls.dampingFactor = 0.05;
+controls.maxPolarAngle = Math.PI / 2.5; // Limits vertical rotation
+controls.minDistance = 23; // Prevents zooming too close
+controls.maxDistance = 30; // Prevents zooming too far
+controls.enablePan = false; // Disable panning/ Disable excessive zoom on mobile
+
+// 4. Scene
 const scene = new THREE.Scene();
 
-const geo = new THREE.IcosahedronGeometry(1.0, 3); //geo object, size and detail
-const mat = new THREE.MeshStandardMaterial({ // standard material
-    color: 0xffffff,
-    flatShading: true
+// 5. Lighting (Balanced for text visibility)
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+scene.add(hemiLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight.position.set(1, 2, 5);
+scene.add(dirLight);
+
+// 6. Load Font and Create Text
+const loader = new FontLoader();
+loader.load("./helvetiker_regular.typeface.json", function (font) {
+    console.log("✅ Font loaded successfully!");
+
+    const textGeometry = new TextGeometry("NARRIFY", {
+        font: font,
+        size: 2.5,  // Adjusted for mobile fit
+        depth: 2,  // Reduced depth for performance
+        curveSegments: 12,  // Less complexity = better performance
+        bevelEnabled: true,
+        bevelThickness: 0.3,
+        bevelSize: 0.2,
+        bevelSegments: 4,
+    });
+
+    // Main text material
+    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    textMesh.position.set(-8, 8, -6);
+    scene.add(textMesh);
+
+    // Wireframe Overlay (Slightly larger to create a glowing effect)
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+    const wireMesh = new THREE.Mesh(textGeometry, wireMat);
+    wireMesh.scale.setScalar(1.002);
+    textMesh.add(wireMesh);
+
+    animate(textMesh);
 });
-const mesh = new THREE.Mesh(geo, mat);//passing both container 
-scene.add(mesh);//adding to scene
 
-const wireMat = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    wireframe: true
-})
+// 7. Responsive Resize Handling
+window.addEventListener("resize", () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-const wireMesh = new THREE.Mesh(geo, wireMat);
-wireMesh.scale.setScalar(1.001);
-mesh.add(wireMesh);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Prevents excessive rendering on mobile
+});
 
-const hemiLight = new THREE.HemisphereLight(0x0099ff, 0xaa5500);//lighting
-scene.add(hemiLight); //adding to scene
-
-function animate(t = 0) { //animate object
-    requestAnimationFrame(animate);
-    mesh.rotation.y = t * 0.0001;
-    renderer.render(scene, camera);
-    controls.update();
+// 8. Animation (Smooth FPS and better loop handling)
+function animate(mesh) {
+    function renderLoop() {
+        requestAnimationFrame(renderLoop);
+        if (mesh) mesh.rotation.y += 0.0005; // Slightly faster rotation
+        renderer.render(scene, camera);
+        controls.update();
+    }
+    renderLoop();
 }
-
-animate();
-

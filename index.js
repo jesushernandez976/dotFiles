@@ -37,7 +37,7 @@ const loader = new FontLoader();
 loader.load("./helvetiker_regular.typeface.json", function (font) {
     console.log("✅ Font loaded successfully!");
 
-    const textGeometry = new TextGeometry("NARRIFY", {
+    const textGeometry = new TextGeometry("DOTpdf", {
         font: font,
         size: 2.5,  // Adjusted for mobile fit
         depth: 2,  // Reduced depth for performance

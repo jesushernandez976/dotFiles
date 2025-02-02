@@ -3,67 +3,107 @@ import { OrbitControls } from "https://esm.sh/three/examples/jsm/controls/OrbitC
 import { FontLoader } from "https://esm.sh/three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "https://esm.sh/three/examples/jsm/geometries/TextGeometry.js";
 
-// 1. Renderer (Optimized)
+// Text variations
+const textVariations = ["DOTpdf", "DOTjpg", "DOTpng"];
+let currentTextIndex = 0;
+
+// Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel density for performance
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.body.appendChild(renderer.domElement);
 
-// 2. Camera (Wide-angle for mobile compatibility)
+// Camera
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.set(15, 12, 19);
 
-// 3. Controls (Smooth movement)
+// Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.maxPolarAngle = Math.PI / 2.1; // Limits vertical rotation
-controls.minDistance = 23; // Prevents zooming too close
-controls.maxDistance = 30; // Prevents zooming too far
-controls.enablePan = false; // Disable panning/ Disable excessive zoom on mobile
+controls.maxPolarAngle = Math.PI / 2.1;
+controls.minDistance = 23;
+controls.maxDistance = 30;
+controls.enablePan = false;
 
-// 4. Scene
+// Scene
 const scene = new THREE.Scene();
 
-// 5. Lighting (Balanced for text visibility)
+// Lighting
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
 scene.add(hemiLight);
 const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
 dirLight.position.set(1, 2, 5);
 scene.add(dirLight);
 
-// 6. Load Font and Create Text
+// Raycaster for click detection
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+// Load Font and Create Text
 const loader = new FontLoader();
+let textMesh;
+let loadedFont = null; // Store font globally
+
 loader.load("./helvetiker_regular.typeface.json", function (font) {
     console.log("✅ Font loaded successfully!");
+    loadedFont = font; // Store font globally
 
-    const textGeometry = new TextGeometry("DOTpdf", {
-        font: font,
-        size: 3.0,  // Adjusted for mobile fit
-        depth: 2,  // Reduced depth for performance
-        curveSegments: 12,  // Less complexity = better performance
+    createText(textVariations[currentTextIndex]); // Initialize text
+    animate();
+});
+
+// Function to Create Text
+function createText(text) {
+    if (!loadedFont) return; // Prevent errors if font is not loaded yet
+
+    // Remove old text if it exists
+    if (textMesh) {
+        textMesh.geometry.dispose();
+        scene.remove(textMesh);
+    }
+
+    // Create new text geometry
+    const textGeometry = new TextGeometry(text, {
+        font: loadedFont, // Ensure font is used
+        size: 3.2,
+        depth: 2,
+        curveSegments: 12,
         bevelEnabled: true,
         bevelThickness: 0.3,
         bevelSize: 0.2,
         bevelSegments: 4,
     });
 
-    // Main text material
+    // Apply both solid and wireframe materials
     const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(-7, 9, 0);
+    const wireframeMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+        wireframe: true,
+    });
+
+    // Combine materials
+    textMesh = new THREE.Mesh(textGeometry, [textMaterial, wireframeMaterial]);
+
+    textMesh.position.set(-8, 9, 0);
     scene.add(textMesh);
+}
 
-    // Wireframe Overlay (Slightly larger to create a glowing effect)
-    const wireMat = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
-    const wireMesh = new THREE.Mesh(textGeometry, wireMat);
-    wireMesh.scale.setScalar(1.0);
-    textMesh.add(wireMesh);
+// Click Event Listener
+window.addEventListener("click", (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    animate(textMesh);
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(textMesh);
+
+    if (intersects.length > 0) {
+        currentTextIndex = (currentTextIndex + 1) % textVariations.length;
+        createText(textVariations[currentTextIndex]); // Update text
+    }
 });
 
-// 7. Responsive Resize Handling
+// Responsive Resize Handling
 window.addEventListener("resize", () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -71,19 +111,16 @@ window.addEventListener("resize", () => {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Prevents excessive rendering on mobile
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-
-
-// 8. Animation (Smooth FPS and better loop handling)
-function animate(mesh) {
+// Animation Loop
+function animate() {
     function renderLoop() {
         requestAnimationFrame(renderLoop);
-        if (mesh) mesh.rotation.y += 0.0005; // Slightly faster rotation
+        if (textMesh) textMesh.rotation.y += 0.0003;
         renderer.render(scene, camera);
         controls.update();
     }
     renderLoop();
-
 }

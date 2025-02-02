@@ -4,7 +4,7 @@ import { FontLoader } from "https://esm.sh/three/examples/jsm/loaders/FontLoader
 import { TextGeometry } from "https://esm.sh/three/examples/jsm/geometries/TextGeometry.js";
 
 // Text variations
-const textVariations = ["DOTpng", "DOTjpg", "DOTpdf"];
+const textVariations = ["DOTpdf", "DOTjpg", "DOTpng"];
 let currentTextIndex = 0;
 
 // Renderer

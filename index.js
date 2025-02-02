@@ -11,13 +11,13 @@ document.body.appendChild(renderer.domElement);
 
 // 2. Camera (Wide-angle for mobile compatibility)
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(7, 10, 20);
+camera.position.set(10, 12, 20);
 
 // 3. Controls (Smooth movement)
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.maxPolarAngle = Math.PI / 2.5; // Limits vertical rotation
+controls.maxPolarAngle = Math.PI / 2.1; // Limits vertical rotation
 controls.minDistance = 23; // Prevents zooming too close
 controls.maxDistance = 30; // Prevents zooming too far
 controls.enablePan = false; // Disable panning/ Disable excessive zoom on mobile
@@ -51,7 +51,7 @@ loader.load("./helvetiker_regular.typeface.json", function (font) {
     // Main text material
     const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-    textMesh.position.set(-8, 8, -6);
+    textMesh.position.set(-7, 8, -1);
     scene.add(textMesh);
 
     // Wireframe Overlay (Slightly larger to create a glowing effect)

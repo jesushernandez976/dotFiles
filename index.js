@@ -11,7 +11,7 @@ document.body.appendChild(renderer.domElement);
 
 // 2. Camera (Wide-angle for mobile compatibility)
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(10, 12, 19);
+camera.position.set(15, 12, 19);
 
 // 3. Controls (Smooth movement)
 const controls = new OrbitControls(camera, renderer.domElement);

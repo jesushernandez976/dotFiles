@@ -29,6 +29,14 @@ controls.enablePan = false;
 // Scene
 const scene = new THREE.Scene();
 
+// Background Options (Choose One)
+// 1. Solid Color Background
+scene.background = new THREE.Color(0x4682B4); // Dark Gray
+
+// 2. Texture Background (Uncomment to use an image as background)
+// const textureLoader = new THREE.TextureLoader();
+// scene.background = textureLoader.load("path/to/your/texture.jpg"); // Replace with your image
+
 // Lighting
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
 scene.add(hemiLight);

@@ -94,7 +94,7 @@ footer {
 
 
 .dropdown-content .dropdown-item:hover {
-    background-color: #f1f1f1;
+    background-color:rgb(68, 68, 68);
     z-index: 5;
 }
 

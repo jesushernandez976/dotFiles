@@ -60,7 +60,7 @@ function createText(text) {
     }
 
     let textSize = window.innerWidth >= 500 ? 6.0 : 3.5;
-    let position = window.innerWidth >= 500 ? new THREE.Vector3(-15, 8, 0) : new THREE.Vector3(-9, 9, 0);
+    let position = window.innerWidth >= 500 ? new THREE.Vector3(-15, 8, 0) : new THREE.Vector3(-8, 9, 0);
 
     const textGeometry = new TextGeometry(text, {
         font: loadedFont,
@@ -193,36 +193,43 @@ const { jsPDF } = window.jspdf; // Ensure jsPDF is available
 
 // **Convert PDF to Image (PNG/JPG)**
 function convertPdfToImage(file, format) {
-    if (!pdfjsLib) {
-        console.error("pdfjsLib is not loaded properly.");
-        return;
-    }
-
     const reader = new FileReader();
     reader.onload = function () {
-        const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(reader.result) });
+        const loadingTask = pdfjsLib.getDocument(reader.result);
         loadingTask.promise.then(function (pdf) {
+            // Ensure that the PDF is loaded
+            if (!pdf) {
+                console.error("Failed to load the PDF document.");
+                return;
+            }
+            
             pdf.getPage(1).then(function (page) {
-                const scale = 2;
+                const scale = 2; // Adjust this scale to fit your needs
                 const viewport = page.getViewport({ scale: scale });
 
+                // Create a canvas element to render the page into
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
 
-                const renderContext = { canvasContext: context, viewport: viewport };
+                // Render the page into the canvas
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
                 page.render(renderContext).promise.then(function () {
                     const imageData = canvas.toDataURL(`image/${format}`);
-                    downloadImage(imageData, `converted.${format}`);
+                    if (imageData) {
+                        downloadImage(imageData, `converted.${format}`);
+                    } 
                 });
             });
-        }).catch(error => {
-            console.error("Error loading PDF:", error);
-        });
+        }).catch(error => console.error("PDF loading error:", error));
     };
     reader.readAsArrayBuffer(file);
 }
+
 
 
 // **Convert Image to JPG/PNG/PDF**
@@ -278,28 +285,34 @@ function convertTextToFormat(file, format) {
 // **Convert DOC/DOCX to PDF/PNG/JPG**
 function convertDocToFormat(file, format) {
     const reader = new FileReader();
+    
     reader.onload = function () {
         const arrayBuffer = reader.result;
-        const doc = new Docxtemplater(arrayBuffer);
-        const html = doc.getFullText();
 
-        // Convert to PDF
-        if (format === 'pdf') {
-            const pdf = new jsPDF();
-            pdf.html(html, { callback: function (pdf) { pdf.save('converted.pdf'); } });
-        } else {
-            // Convert to Image (PNG/JPG)
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = 600;
-            canvas.height = 800;
-            context.font = '20px Arial';
-            context.fillText(html, 10, 30);
-            
-            const imageData = canvas.toDataURL(`image/${format}`);
-            downloadImage(imageData, `converted.${format}`);
-        }
+        // Convert DOCX to text using Mammoth.js
+        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+            .then(result => {
+                const text = result.value;
+                
+                if (format === "pdf") {
+                    const doc = new jsPDF();
+                    doc.text(text, 10, 10);
+                    doc.save("converted.pdf");
+                } else {
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.width = 600;
+                    canvas.height = 800;
+                    context.font = "20px Arial";
+                    context.fillText(text, 10, 30);
+
+                    const imageData = canvas.toDataURL(`image/${format}`);
+                    downloadImage(imageData, `converted.${format}`);
+                }
+            })
+            .catch(error => console.error("Error extracting DOCX content:", error));
     };
+
     reader.readAsArrayBuffer(file);
 }
 
@@ -312,4 +325,5 @@ function downloadImage(imageData, filename) {
     a.click();
     document.body.removeChild(a);
 }
+
 

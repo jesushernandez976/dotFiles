@@ -73,7 +73,7 @@ function createText(text) {
         bevelSegments: 4,
     });
 
-    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xFF0000});
     textMesh = new THREE.Mesh(textGeometry, textMaterial);
     textMesh.position.copy(position);
     scene.add(textMesh);
@@ -325,5 +325,6 @@ function downloadImage(imageData, filename) {
     a.click();
     document.body.removeChild(a);
 }
+
 
 

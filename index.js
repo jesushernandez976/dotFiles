@@ -261,26 +261,67 @@ function convertImageToFormat(file, format) {
 // **Convert Text to PDF/PNG/JPG**
 function convertTextToFormat(file, format) {
     const reader = new FileReader();
+    
     reader.onload = function () {
         const text = reader.result;
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = 600;
-        canvas.height = 800;
-        context.font = '20px Arial';
-        context.fillText(text, 10, 30);
 
+        // If it's a PDF
         if (format === 'pdf') {
-            const pdf = new jsPDF();
-            pdf.text(text, 10, 10);
-            pdf.save('converted.pdf');
+            if (file.type.startsWith('image/')) {
+                const img = new Image();
+                img.onload = function () {
+                    const pdf = new jsPDF();
+                    pdf.addImage(img, 'PNG', 10, 10, 180, 160); // Add image to PDF
+                    pdf.save('converted.pdf');
+                };
+                img.src = reader.result; // Use the image data for conversion
+            } else {
+                const pdf = new jsPDF();
+                pdf.text(text, 10, 10); // If it's text, add to PDF
+                pdf.save('converted.pdf');
+            }
+        } else if (format === 'image') {
+            // Convert text to image if selected
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 600;
+            canvas.height = 800;
+            context.font = '20px Arial';
+            context.fillText(text, 10, 30);
+            const imageData = canvas.toDataURL('image/png');
+            downloadImage(imageData, 'converted.png');
         } else {
-            const imageData = canvas.toDataURL(`image/${format}`);
-            downloadImage(imageData, `converted.${format}`);
+            // Directly download the file as is
+            const a = document.createElement('a');
+            a.href = reader.result;
+            a.download = `converted.${format}`;
+            a.click();
         }
     };
-    reader.readAsText(file);
+
+    if (file.type === 'application/pdf') {
+        // If it's already a PDF, download it directly
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(file);
+        a.download = file.name;
+        a.click();
+    } else if (file.type.startsWith('image/')) {
+        // If it's an image (including JPG, PNG), process it as an image
+        reader.readAsDataURL(file);
+    } else {
+        // For text files, read as text
+        reader.readAsText(file);
+    }
 }
+
+function downloadImage(data, filename) {
+    const a = document.createElement('a');
+    a.href = data;
+    a.download = filename;
+    a.click();
+}
+
+
 
 // **Convert DOC/DOCX to PDF/PNG/JPG**
 function convertDocToFormat(file, format) {
@@ -317,14 +358,5 @@ function convertDocToFormat(file, format) {
 }
 
 // **Download Image Helper**
-function downloadImage(imageData, filename) {
-    const a = document.createElement('a');
-    a.href = imageData;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
 
 

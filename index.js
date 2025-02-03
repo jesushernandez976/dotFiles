@@ -53,7 +53,7 @@ loader.load("./helvetiker_regular.typeface.json", function (font) {
     animate();
 });
 
-// Function to Create Text
+// Function to Create Text with Responsive Size
 function createText(text) {
     if (!loadedFont) return; // Prevent errors if font is not loaded yet
 
@@ -63,10 +63,21 @@ function createText(text) {
         scene.remove(textMesh);
     }
 
+    let textSize = 3.0; // Default size
+    let position = new THREE.Vector3(-7, 9, 0); // Default position
+
+    // Adjust text size and position based on viewport width
+    if (window.innerWidth >= 500) {
+        textSize = 6.0; // Increase size for viewport width 500px and above
+        position.set(-15, 8, 0); // Adjust the position once the width is 500px+
+    } else {
+        position.set(-7, 9, 0); // Adjust position for smaller screen sizes
+    }
+
     // Create new text geometry
     const textGeometry = new TextGeometry(text, {
         font: loadedFont, // Ensure font is used
-        size: 3.0,
+        size: textSize,
         depth: 2,
         curveSegments: 12,
         bevelEnabled: true,
@@ -85,7 +96,7 @@ function createText(text) {
     // Combine materials
     textMesh = new THREE.Mesh(textGeometry, [textMaterial, wireframeMaterial]);
 
-    textMesh.position.set(-7, 9, 0);
+    textMesh.position.copy(position);
     scene.add(textMesh);
 }
 
@@ -123,49 +134,52 @@ window.addEventListener("resize", () => {
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Create or remove text based on the new width
+    createText(textVariations[currentTextIndex]);
 });
 
 // Animation Loop
 function animate() {
     function renderLoop() {
         requestAnimationFrame(renderLoop);
-        if (textMesh) textMesh.rotation.y += 0.0005;
+        if (textMesh) textMesh.rotation.y += 0.0009;
         renderer.render(scene, camera);
         controls.update();
     }
     renderLoop();
 
-   // Ensure the "convert" button triggers the file conversion
-   document.getElementById("convertBtn").addEventListener("click", function () {
-    const fileInput = document.getElementById("fileInput");
-    if (fileInput.files.length === 0) {
-        alert("Please select a file first!");
-        return;
-    }
+    // Ensure the "convert" button triggers the file conversion
+    document.getElementById("convertBtn").addEventListener("click", function () {
+        const fileInput = document.getElementById("fileInput");
+        if (fileInput.files.length === 0) {
+            alert("Please select a file first!");
+            return;
+        }
 
-    const selectedFormat = document.getElementById("dropdownBtn").getAttribute("data-format");
-    alert(`Converting to ${selectedFormat}...`);
-    // Replace this with actual file conversion logic
-});
-
-document.querySelectorAll(".dropdown-item").forEach(item => {
-    item.addEventListener("click", function () {
-        const selectedFormat = item.getAttribute("data-format");
-        const iconPath = `${selectedFormat}.png`; // Ensure the correct file name format
-        document.getElementById("dropdownBtn").innerHTML = `<img src="${iconPath}" alt="${selectedFormat}" width="40">`;
+        const selectedFormat = document.getElementById("dropdownBtn").getAttribute("data-format");
+        alert(`Converting to ${selectedFormat}...`);
+        // Replace this with actual file conversion logic
     });
-});
 
-// File Input Event Listener to display file name
-document.getElementById("fileInput").addEventListener("change", function(event) {
-    const fileInput = event.target;
-    const fileNameDisplay = document.getElementById("fileNameDisplay");
-    
-    if (fileInput.files.length > 0) {
-        const selectedFile = fileInput.files[0];
-        fileNameDisplay.textContent = `${selectedFile.name}`;
-    } else {
-        fileNameDisplay.textContent = "No file selected";
-    }
-});
+    document.querySelectorAll(".dropdown-item").forEach(item => {
+        item.addEventListener("click", function () {
+            const selectedFormat = item.getAttribute("data-format");
+            const iconPath = `${selectedFormat}.png`; // Ensure the correct file name format
+            document.getElementById("dropdownBtn").innerHTML = `<img src="${iconPath}" alt="${selectedFormat}" width="40">`;
+        });
+    });
+
+    // File Input Event Listener to display file name
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+        const fileInput = event.target;
+        const fileNameDisplay = document.getElementById("fileNameDisplay");
+
+        if (fileInput.files.length > 0) {
+            const selectedFile = fileInput.files[0];
+            fileNameDisplay.textContent = `${selectedFile.name}`;
+        } else {
+            fileNameDisplay.textContent = "No file selected";
+        }
+    });
 }

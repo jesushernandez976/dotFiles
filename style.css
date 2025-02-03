@@ -1,7 +1,7 @@
 html, body {
     margin: 0;
+    padding: 0;
     overflow: hidden;
-    display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -16,14 +16,37 @@ html, body {
     align-items: center; /* Center items horizontally */
     gap: 30px; /* Add space between elements */
     position: absolute;
-    top: 60%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%); /* Center container */
     border-radius: 10px;
     color: white;
-
-    
 }
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 85%;
+    height: 100px; /* Height of the footer */
+    z-index: 1;
+  }
+
+  footer .nav-link {
+    color:rgb(255, 255, 255) !important; /* Blue color for links */
+    text-decoration: none !important;
+    font-size: 12px;
+  }
+
+
+
+  footer .text-center {
+    color:rgb(255, 255, 255) !important;
+    font-size: 7px;
+  }
+  
+  footer a:hover {
+    color:rgb(250, 0, 0) !important; /* Red color on hover */
+  }
 
 #fileNameDisplay {
     padding: 0px;
@@ -36,6 +59,7 @@ html, body {
     position: relative;
     display: inline-block;
     text-align: center;
+    z-index: 5;
 }
 
 .dropdown-btn {
@@ -43,6 +67,7 @@ html, body {
     border: none;
     cursor: pointer;
     padding: 5px;
+    z-index: 5;
 }
 
 .dropdown-content {
@@ -50,7 +75,7 @@ html, body {
     position: absolute;
     background-color: #fff;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 5;
     width: 60px;
     padding: 5px 0;
     text-align: center;
@@ -64,31 +89,37 @@ html, body {
     justify-content: center; /* Center icons */
     align-items: center;
     padding: 5px;
+    z-index: 5;
 }
 
 
 .dropdown-content .dropdown-item:hover {
     background-color: #f1f1f1;
+    z-index: 5;
 }
 
 #customDropdown:hover .dropdown-content {
     display: block;
+    z-index: 5;
 }
 
 #customDropdown .dropdown-item img {
     width: 40px;
     height: auto;
+    z-index: 5;
 }
 
 input, button, select {
     padding: 10px;
     font-size: 16px;
     font-family: helvetica, arial, sans-serif;
+    z-index: 5;
 }
 
 #customFileUpload, #convertBtn, #formatSelect {
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
+    z-index: 5;
     
 }
 
@@ -128,6 +159,10 @@ input, button, select {
         
     }
     
+    footer {
+        width: 93%;
+
+      }
 
     
 }

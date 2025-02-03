@@ -31,16 +31,16 @@ const scene = new THREE.Scene();
 
 // Background Options (Choose One)
 // 1. Solid Color Background
-scene.background = new THREE.Color(0x4682B4); // Dark Gray
+// scene.background = new THREE.Color(0x808000); // Dark Gray
 
 // 2. Texture Background (Uncomment to use an image as background)
 // const textureLoader = new THREE.TextureLoader();
-// scene.background = textureLoader.load("path/to/your/texture.jpg"); // Replace with your image
+// scene.background = textureLoader.load("./background.jpg"); // Replace with your image
 
 // Lighting
 const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
 scene.add(hemiLight);
-const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
 dirLight.position.set(1, 2, 5);
 scene.add(dirLight);
 
@@ -190,4 +190,27 @@ function animate() {
             fileNameDisplay.textContent = "No file selected";
         }
     });
+
+    // Create Gradient Background using Canvas
+function createGradientBackground() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = 512;
+    canvas.height = 512;
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "#191970"); // Top color
+    gradient.addColorStop(1, "#778899"); // Bottom color
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    scene.background = texture; // Apply gradient as scene background
+}
+
+// Call the function to set the gradient background
+createGradientBackground();
+
 }

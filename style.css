@@ -14,7 +14,7 @@ html, body {
     flex-direction: row; /* Stack the items vertically */
     justify-content: space-evenly; /* Distribute space evenly between items */
     align-items: center; /* Center items horizontally */
-    gap: 30px; /* Add space between elements */
+    gap: 80px; /* Add space between elements */
     position: absolute;
     top: 55%;
     left: 50%;
@@ -156,6 +156,7 @@ input, button, select {
     #ui-container {
         top: 55%;
         left: 55%;
+        gap: 30px;
         
     }
     

@@ -15,7 +15,7 @@ document.body.appendChild(renderer.domElement);
 
 // Camera
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(15, 12, 19);
+camera.position.set(15, 100, 133);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -59,8 +59,8 @@ function createText(text) {
         scene.remove(textMesh);
     }
 
-    let textSize = window.innerWidth >= 500 ? 6.0 : 3.5;
-    let position = window.innerWidth >= 500 ? new THREE.Vector3(-15, 8, 0) : new THREE.Vector3(-8, 9, 0);
+    let textSize = window.innerWidth >= 500 ? 7.0 : 3.5;
+    let position = window.innerWidth >= 500 ? new THREE.Vector3(-17, 8, 0) : new THREE.Vector3(-8, 9, 0);
 
     const textGeometry = new TextGeometry(text, {
         font: loadedFont,
@@ -119,7 +119,7 @@ window.addEventListener("resize", () => {
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate);
-    if (textMesh) textMesh.rotation.y += 0.0009;
+    if (textMesh) textMesh.rotation.y += 0.0011;
     renderer.render(scene, camera);
     controls.update();
 }

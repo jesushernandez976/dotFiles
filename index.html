@@ -15,6 +15,42 @@
 		</script>
   </head>
   <body>
+    <div id="ui-container">
+      <!-- File Input -->
+      <label for="fileInput" id="customFileUpload">
+          <img src="folder.png" alt="Upload" width="60">
+      </label>
+      <input type="file" id="fileInput" accept=".txt,.doc,.docx,.png,.jpg,.jpeg,.pdf" hidden>
+
+      <!-- Convert Button -->
+     
+      <!-- Dropdown for File Formats -->
+      <div id="customDropdown" class="dropdown">
+          <button id="dropdownBtn" class="dropdown-btn">
+              <img src="pdf.png" alt="Format" width="40">
+          </button>
+          <div class="dropdown-content">
+              <div class="dropdown-item" data-format="pdf">
+                  <img src="pdf.png" alt="PDF" width="40">
+              </div>
+              <div class="dropdown-item" data-format="png">
+                  <img src="png.png" alt="PNG" width="40">
+              </div>
+              <div class="dropdown-item" data-format="jpg">
+                  <img src="jpg.png" alt="JPG" width="40">
+              </div>
+          </div>
+      </div>
+      
+       <label id="convertBtn">
+          <img src="exchange.png" alt="Convert" width="60">
+      </label>
+
+
+      <div id="preview"></div>
+  </div>
+
+
     <script type="module" src="index.js"></script>
   </body>
 </html>

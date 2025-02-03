@@ -1,6 +1,118 @@
 html, body {
-    background-color: white !important; /* Change to your desired color */
-    margin: 0; /* Remove default margin */
-    height: 100%; /* Ensure the body takes up the full viewport height */
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    font-family: Arial, sans-serif;
 }
 
+#ui-container {
+    display: flex;
+    flex-direction: column; /* Stack the items vertically */
+    justify-content: space-evenly; /* Distribute space evenly between items */
+    align-items: center; /* Center items horizontally */
+    gap: 30px; /* Add space between elements */
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%); /* Center container */
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    
+}
+
+/* Dropdown Menu */
+#customDropdown {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+.dropdown-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.dropdown-content {
+    display: none; /* Hidden by default */
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 60px;
+    padding: 5px 0;
+    text-align: center;
+    top: 30px; /* Ensure it's visible under the button */
+    left: 50%;
+    transform: translateX(-50%); /* Center the dropdown */
+}
+
+.dropdown-content .dropdown-item {
+    display: flex;
+    justify-content: center; /* Center icons */
+    align-items: center;
+    padding: 5px;
+}
+
+
+.dropdown-content .dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+#customDropdown:hover .dropdown-content {
+    display: block;
+}
+
+#customDropdown .dropdown-item img {
+    width: 40px;
+    height: auto;
+}
+
+input, button, select {
+    padding: 10px;
+    font-size: 16px;
+    font-family: helvetica, arial, sans-serif;
+}
+
+#customFileUpload, #convertBtn, #formatSelect {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    
+}
+
+#customFileUpload:hover, #convertBtn:hover {
+    transform: scale(1.1);
+}
+
+/* Mobile Responsive Layout */
+@media (max-width: 480px) {
+    #ui-container {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #customFileUpload, #convertBtn, #customDropdown {
+        flex: 1;
+        text-align: center;
+    }
+
+    #customDropdown {
+        width: 80px;
+    }
+
+    #customFileUpload img, #convertBtn img {
+        width: 50px;
+        height: auto;
+    }
+
+    #customDropdown:hover .dropdown-content {
+        display: block;
+    }
+}

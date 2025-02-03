@@ -134,4 +134,26 @@ function animate() {
         controls.update();
     }
     renderLoop();
+
+   // Ensure the "convert" button triggers the file conversion
+   document.getElementById("convertBtn").addEventListener("click", function () {
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput.files.length === 0) {
+        alert("Please select a file first!");
+        return;
+    }
+
+    const selectedFormat = document.getElementById("dropdownBtn").getAttribute("data-format");
+    alert(`Converting to ${selectedFormat}...`);
+    // Replace this with actual file conversion logic
+});
+
+document.querySelectorAll(".dropdown-item").forEach(item => {
+    item.addEventListener("click", function () {
+        const selectedFormat = item.getAttribute("data-format");
+        const iconPath = `${selectedFormat}.png`; // Ensure the correct file name format
+        document.getElementById("dropdownBtn").innerHTML = `<img src="${iconPath}" alt="${selectedFormat}" width="40">`;
+    });
+});
+
 }

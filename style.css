@@ -11,18 +11,24 @@ html, body {
 
 #ui-container {
     display: flex;
-    flex-direction: column; /* Stack the items vertically */
+    flex-direction: row; /* Stack the items vertically */
     justify-content: space-evenly; /* Distribute space evenly between items */
     align-items: center; /* Center items horizontally */
     gap: 30px; /* Add space between elements */
     position: absolute;
-    top: 55%;
-    left: 55%;
+    top: 60%;
+    left: 50%;
     transform: translate(-50%, -50%); /* Center container */
-    padding: 20px;
     border-radius: 10px;
     color: white;
+
     
+}
+
+#fileNameDisplay {
+    padding: 0px;
+    margin: 0px;
+    font-size: 12px;
 }
 
 /* Dropdown Menu */
@@ -115,4 +121,13 @@ input, button, select {
     #customDropdown:hover .dropdown-content {
         display: block;
     }
+
+    #ui-container {
+        top: 55%;
+        left: 55%;
+        
+    }
+    
+
+    
 }

@@ -156,4 +156,16 @@ document.querySelectorAll(".dropdown-item").forEach(item => {
     });
 });
 
+// File Input Event Listener to display file name
+document.getElementById("fileInput").addEventListener("change", function(event) {
+    const fileInput = event.target;
+    const fileNameDisplay = document.getElementById("fileNameDisplay");
+    
+    if (fileInput.files.length > 0) {
+        const selectedFile = fileInput.files[0];
+        fileNameDisplay.textContent = `${selectedFile.name}`;
+    } else {
+        fileNameDisplay.textContent = "No file selected";
+    }
+});
 }

@@ -16,7 +16,7 @@ html, body {
     align-items: center; /* Center items horizontally */
     gap: 30px; /* Add space between elements */
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 55%;
     transform: translate(-50%, -50%); /* Center container */
     padding: 20px;
